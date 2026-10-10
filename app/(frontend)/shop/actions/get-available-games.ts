@@ -60,6 +60,8 @@ export default async function GetAvailableGames(
       .orderBy(asc(games.sortOrder), asc(games.id)) // stable order across pages
       .limit(page * SHOP_PAGE_SIZE + 1);
 
+    console.log("GetAvailableGames", { page, search, rows });
+
     return {
       success: true,
       data: {

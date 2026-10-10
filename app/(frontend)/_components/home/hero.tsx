@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Zap, ShieldCheck, Headset, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import SearchBar from "@/components/shared/search-bar";
+import Shell, { type ShellProps } from "../shared/shell";
 import { CarouselBoard, CarouselOrientation } from "../shared/carousel";
 
 export type HeroFeature = { icon: LucideIcon; label: string };
@@ -18,15 +18,12 @@ export type HeroPackage = {
   href: string;
 };
 
-export type HeroProps = {
-  image?: string;
-  preload?: boolean;
+export type HeroProps = ShellProps & {
   eyebrow?: string;
   title?: string;
   description?: string;
   features?: HeroFeature[];
   packages?: HeroPackage[];
-  className?: string;
 };
 
 const DEFAULT_FEATURES: HeroFeature[] = [
@@ -69,45 +66,6 @@ const DEFAULT_PACKAGES: HeroPackage[] = [
     href: "/shop/mobile-legends",
   },
 ];
-
-const SHARP_MASK =
-  "linear-gradient(to bottom, #000 0%, #000 42%, rgba(0,0,0,0.6) 64%, transparent 86%)";
-
-const BLUR_MASK =
-  "linear-gradient(to bottom, transparent 0%, transparent 38%, #000 66%, transparent 94%)";
-
-function MaskedBackground({
-  src,
-  mask,
-  blurred,
-  preload,
-  className,
-}: {
-  src: string;
-  mask: string;
-  blurred?: boolean;
-  preload?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      aria-hidden
-      className={cn("absolute inset-x-0 top-0 h-4/5", className)}
-      style={{ maskImage: mask, WebkitMaskImage: mask }}
-    >
-      <div className={cn("absolute inset-0", blurred && "blur-xl")}>
-        <Image
-          src={src}
-          alt=""
-          fill
-          sizes="100vw"
-          preload={blurred ? undefined : preload}
-          className="object-cover object-[50%_35%] grayscale-100"
-        />
-      </div>
-    </div>
-  );
-}
 
 function FeatureList({ items }: { items: HeroFeature[] }) {
   return (
@@ -158,72 +116,54 @@ function PackageCard({
 }
 
 export default function Hero({
-  image = "/images/banner_black.png",
-  preload = true,
+  image,
+  preload,
+  className,
+  innerClassName,
   title = "Top up any game in minutes",
   description = "Free Fire, PUBG, Roblox and more. Pay with eSewa, Khalti or bank.",
   features = DEFAULT_FEATURES,
   packages = DEFAULT_PACKAGES,
-  className,
 }: HeroProps) {
   return (
-    <section
-      className={cn("relative isolate w-full overflow-hidden", className)}
-    >
-      <MaskedBackground src={image} mask={BLUR_MASK} blurred className="z-10" />
-      <MaskedBackground
-        src={image}
-        mask={SHARP_MASK}
-        preload={preload}
-        className="z-10"
-      />
+    <Shell
+      image={image}
+      preload={preload}
+      className={className}
+      innerClassName={innerClassName}
+      content={
+        <>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 ">
+            <div className="space-y-3">
+              <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+                {title}
+              </h1>
+              <p className="max-w-lg text-base text-foreground font-medium">
+                {description}
+              </p>
 
-      <div className="relative z-40 mx-auto max-w-7xl items-center px-6 pt-12 pb-6 space-y-8">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14 ">
-          <div className="space-y-3">
-            {/* <p className="text-sm font-medium uppercase tracking-wider text-primary">
-              {eyebrow}
-            </p> */}
-            <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-              {title}
-            </h1>
-            <p className="max-w-lg text-base text-foreground font-medium">
-              {description}
-            </p>
+              <Suspense fallback={null}>
+                <SearchBar
+                  variant="dialog"
+                  trigger="input"
+                  basePath="/shop"
+                  placeholder="Search games, diamonds, UC, Robux…"
+                  className="w-full max-w-md"
+                />
+              </Suspense>
 
-            <Suspense fallback={null}>
-              <SearchBar
-                variant="dialog"
-                trigger="input"
-                basePath="/shop"
-                placeholder="Search games, diamonds, UC, Robux…"
-                className="w-full max-w-md"
-              />
-            </Suspense>
-
-            <FeatureList items={features} />
+              <FeatureList items={features} />
+            </div>
           </div>
 
-          {/* <div className="min-w-0">
-            <Carousel
-              perView={2}
-              items={packages}
-              orientation="card"
-              getKey={(p) => p.id}
-              renderItem={(p, _i, orientation) => (
-                <PackageCard pkg={p} orientation={orientation} />
-              )}
-              autoplayMs={4000}
-            />
-          </div> */}
-        </div>
-        <CarouselBoard
-          items={packages}
-          getKey={(p) => p.id}
-          autoplayMs={4000}
-          renderItem={(p) => <PackageCard pkg={p} orientation="desktop" />}
-        />
-      </div>
-    </section>
+          <CarouselBoard
+            items={packages}
+            getKey={(p) => p.id}
+            autoplayMs={4000}
+            renderItem={(p) => <PackageCard pkg={p} orientation="desktop" />}
+          />
+        </>
+      }
+    />
   );
 }

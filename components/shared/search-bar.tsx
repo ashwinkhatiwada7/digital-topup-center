@@ -391,7 +391,7 @@ function SearchField({
   }, [autoFocusOnMount, inputRef]);
 
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn("relative w-full sm:w-80 smooth", className)}>
       <Search
         size={16}
         className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -411,7 +411,7 @@ function SearchField({
           if (e.key === "Enter") onSubmit();
           if (e.key === "Escape" && value) onClear();
         }}
-        className="h-10 pl-9 pr-9"
+        className="h-10 pl-9 pr-9 border-0"
       />
       {isPending ? (
         <span className="absolute right-3 top-1/2 -translate-y-1/2">

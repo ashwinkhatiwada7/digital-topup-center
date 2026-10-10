@@ -1,4 +1,4 @@
-import FaqSection from "./_components/home/faq-section";
+import FaqSection from "./_components/shared/sections/faq-section";
 import Hero from "./_components/home/hero";
 import HowItWorks from "./_components/home/how-it-works";
 import ExclusiveOffers from "./_components/home/offers";

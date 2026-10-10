@@ -3,14 +3,14 @@ import GameManagement from "./game-mangement";
 
 export default async function Game({ gameCode }: { gameCode: string }) {
   const response = await GetGameDetail({ gameCode });
+
   if (!response.success) {
-    return <div>Error in getting games details</div>;
+    return (
+      <p role="alert" className="p-6 text-sm text-destructive">
+        {response.message}
+      </p>
+    );
   }
-  return (
-    <div>
-      <GameManagement game={response.data} />
-    </div>
-  );
-}
-{
+
+  return <GameManagement game={response.data} />;
 }

@@ -24,14 +24,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Section, { type SectionProps } from "../shared/section";
+import Section, { type SectionProps } from "../section";
 import {
   FAQ_CATEGORIES,
   FAQ_ITEMS,
   type FaqCategory,
   type FaqItem,
-} from "../../data/index";
-import type { FaqCategoryId } from "../../data/faq-content";
+} from "../../../data/index";
+import type { FaqCategoryId } from "../../../data/faq-content";
 
 export type { FaqCategory, FaqCategoryId, FaqItem };
 
@@ -42,10 +42,14 @@ export type FaqSectionProps = {
   description?: string;
   initialVisible?: number;
   contactHref?: string;
+  /** Shows the "Can't find your answer?" support card in the sidebar */
+  showContact?: boolean;
   width?: SectionProps["width"];
   headerWidth?: SectionProps["headerWidth"];
   contentWidth?: SectionProps["contentWidth"];
   className?: string;
+  headerClassName?: string;
+  contentClassName?: string;
 };
 
 const SHINE =
@@ -116,10 +120,13 @@ export default function FaqSection({
   description = "Quick answers about orders, payments, delivery and rewards.",
   initialVisible = 6,
   contactHref = "/contact",
+  showContact = true,
   width,
   headerWidth,
   contentWidth,
   className,
+  headerClassName,
+  contentClassName,
 }: FaqSectionProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
@@ -168,29 +175,38 @@ export default function FaqSection({
       headerWidth={headerWidth}
       contentWidth={contentWidth}
       className={className}
+      headerClassName={headerClassName}
+      contentClassName={contentClassName}
     >
-      <div className="grid items-start gap-6 lg:grid-cols-[300px_1fr]">
-        <aside className="overflow-hidden rounded-xl bg-card lg:sticky lg:top-18">
-          <div className="space-y-3 p-4">
-            <span className="grid size-10 place-items-center rounded-xl border-2 border-border bg-primary/20 text-primary">
-              <Headphones className="size-5" />
-            </span>
-            <div>
-              <h3 className="text-sm font-semibold leading-tight">
-                Can&apos;t find your answer?
-              </h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-foreground/70">
-                Message support with your order reference and we&apos;ll sort it
-                out.
-              </p>
+      <div
+        className={cn(
+          "grid items-start gap-6",
+          showContact ? "lg:grid-cols-[300px_1fr]" : "lg:grid-cols-1",
+        )}
+      >
+        {showContact ? (
+          <aside className="overflow-hidden rounded-xl bg-card lg:sticky lg:top-18">
+            <div className="space-y-3 p-4">
+              <span className="grid size-10 place-items-center rounded-xl border-2 border-border bg-primary/20 text-primary">
+                <Headphones className="size-5" />
+              </span>
+              <div>
+                <h3 className="text-sm font-semibold leading-tight">
+                  Can&apos;t find your answer?
+                </h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-foreground/70">
+                  Message support with your order reference and we&apos;ll sort
+                  it out.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="border-t-2 border-border bg-card p-3">
-            <Button asChild className="h-9 w-full text-sm">
-              <Link href={contactHref}>Contact support</Link>
-            </Button>
-          </div>
-        </aside>
+            <div className="border-t-2 border-border bg-card p-3">
+              <Button asChild className="h-9 w-full text-sm">
+                <Link href={contactHref}>Contact support</Link>
+              </Button>
+            </div>
+          </aside>
+        ) : null}
 
         <div className="min-w-0">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row">

@@ -1,6 +1,6 @@
 import GetAvailableGames, {
   type GetAvailableGamesParams,
-} from "../actions/get-available-games";
+} from "../../shop/actions/get-available-games";
 import GamesGrid from "./games-grid";
 
 export default async function Shop({
